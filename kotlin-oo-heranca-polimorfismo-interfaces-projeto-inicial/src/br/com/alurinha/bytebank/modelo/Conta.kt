@@ -1,9 +1,12 @@
 package br.com.alurinha.bytebank.modelo
 
+import br.com.alurinha.bytebank.exception.FalhaAutenticacaoException
+import br.com.alurinha.bytebank.exception.SaldoInsuficienteException
+
 abstract class Conta(
     var titular: Cliente,
     val numero: Int
-) {
+) : Autenticavel {
     var saldo = 0.0
         protected set
 
@@ -17,6 +20,10 @@ abstract class Conta(
         total++
     }
 
+    override fun autentica(senha: Int): Boolean {
+        return titular.autentica(senha)
+    }
+
     fun deposita(valor: Double) {
         if (valor > 0) {
             this.saldo += valor
@@ -25,13 +32,18 @@ abstract class Conta(
 
     abstract fun saca(valor: Double)
 
-    fun transfere(valor: Double, destino: Conta): Boolean {
-        if (saldo >= valor) {
-            saldo -= valor
-            destino.deposita(valor)
-            return true
+    fun transfere(valor: Double, destino: Conta, senha: Int) {
+        if (saldo < valor) {
+            throw SaldoInsuficienteException(mensagem = "O saldo é insuficiente. Saldo atual: $saldo, vc tentou $valor")
         }
-        return false
+
+        if (!autentica(senha)){
+            throw FalhaAutenticacaoException()
+        }
+//        throw RuntimeException()
+
+        saldo -= valor
+        destino.deposita(valor)
     }
 }
 

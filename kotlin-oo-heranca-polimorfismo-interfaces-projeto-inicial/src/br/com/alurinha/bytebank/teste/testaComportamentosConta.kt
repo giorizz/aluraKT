@@ -1,4 +1,7 @@
+import br.com.alurinha.bytebank.exception.FalhaAutenticacaoException
+import br.com.alurinha.bytebank.exception.SaldoInsuficienteException
 import br.com.alurinha.bytebank.modelo.*
+import java.lang.Exception
 
 fun testaComportamentosConta() {
     println("Bem vindo ao Bytebank")
@@ -45,10 +48,20 @@ fun testaComportamentosConta() {
 
     println("Transferência da conta da Fran para o Alex")
 
-    if (contaFran.transfere(destino = contaAlex, valor = 300.0)) {
+    try {
+        contaFran.transfere(destino = contaAlex, valor = 200.0, senha = 5)
         println("Transferência sucedida")
-    } else {
-        println("Falha na transferência")
+    }catch (e: SaldoInsuficienteException) {
+        println("Falha na transferencia")
+        println("Saldo insuficiente")
+        e.printStackTrace()
+    }catch (e: FalhaAutenticacaoException){
+        println("Falha na transferencia")
+        println("Falha na Autenticaçao")
+        e.printStackTrace()
+    }catch (e: Exception) {
+        println("Erro desconhecido")
+        e.printStackTrace()
     }
 
     println(contaAlex.saldo)

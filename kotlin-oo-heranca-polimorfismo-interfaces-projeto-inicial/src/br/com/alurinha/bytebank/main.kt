@@ -1,24 +1,16 @@
 import br.com.alurinha.bytebank.modelo.Endereco
+import java.lang.IllegalStateException
 
 fun main() {
 
-    val endereco = Endereco(logradouro = "R. oriente", complemento = "giorizz")
-    val enderecoNovo = Endereco(bairro = "Diadema", numero = 243)
-
-    println(endereco.equals(enderecoNovo))
-
-    println(endereco.hashCode())
-    println(enderecoNovo.hashCode())
-
-    println(endereco)
-    println(enderecoNovo)
-
+    var endereco: Endereco? = Endereco(logradouro = "Rua oriente Monti")
+    endereco?.let {
+        println(it.logradouro.length)
+        val tamanhoComplemento: Int = it.complemento?.length ?: throw IllegalStateException("Complemento não pode ser nulo")
+        println(tamanhoComplemento)
+    }
 }
 
-fun imprime(valor: Any): Any {
-    println(valor)
-    return valor
-}
 
 
 
